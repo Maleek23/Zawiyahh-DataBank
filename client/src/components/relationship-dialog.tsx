@@ -106,7 +106,7 @@ export function RelationshipDialog({ open, onOpenChange }: RelationshipDialogPro
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Person *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || ""}>
                     <FormControl>
                       <SelectTrigger data-testid="select-relationship-person">
                         <SelectValue placeholder="Select person" />
@@ -131,7 +131,7 @@ export function RelationshipDialog({ open, onOpenChange }: RelationshipDialogPro
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Relationship Type *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger data-testid="select-relationship-type">
                         <SelectValue placeholder="Select relationship" />
@@ -156,7 +156,7 @@ export function RelationshipDialog({ open, onOpenChange }: RelationshipDialogPro
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Related To *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || ""}>
                     <FormControl>
                       <SelectTrigger data-testid="select-relationship-related-person">
                         <SelectValue placeholder="Select related person" />

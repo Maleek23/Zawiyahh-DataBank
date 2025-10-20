@@ -93,14 +93,20 @@ export const insertPersonSchema = createInsertSchema(people).omit({
 
 export const insertProgressMetricSchema = createInsertSchema(progressMetrics).omit({
   id: true,
+}).extend({
+  date: z.coerce.date(),
 });
 
 export const insertMilestoneSchema = createInsertSchema(milestones).omit({
   id: true,
+}).extend({
+  date: z.coerce.date(),
 });
 
 export const insertGoalSchema = createInsertSchema(goals).omit({
   id: true,
+}).extend({
+  targetDate: z.coerce.date(),
 });
 
 export const insertFamilyRelationshipSchema = createInsertSchema(familyRelationships).omit({
