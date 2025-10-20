@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Sparkles } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -180,9 +181,12 @@ export function RelationshipDialog({ open, onOpenChange, preselectedPersonId }: 
                 <FormItem>
                   <FormLabel>Related To *</FormLabel>
                   {suggestedConnections.length > 0 && (
-                    <p className="text-xs text-muted-foreground mb-2">
-                      💡 {suggestedConnections.length} suggested {suggestedConnections.length === 1 ? 'match' : 'matches'} with matching last name
-                    </p>
+                    <div className="flex items-center gap-2 mb-2 text-xs text-primary">
+                      <Sparkles className="h-3 w-3" />
+                      <span>
+                        {suggestedConnections.length} suggested {suggestedConnections.length === 1 ? 'match' : 'matches'} with matching last name
+                      </span>
+                    </div>
                   )}
                   <Select onValueChange={field.onChange} value={field.value || ""}>
                     <FormControl>
