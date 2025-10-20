@@ -45,10 +45,16 @@ Enable users to track their journey from "Bad" to "Elite++" across multiple life
 2. **Personal Profiles**: 
    - Grid view with search and filter functionality
    - Detailed profile pages with avatar, progress bars
+   - Enhanced cards with gradient avatars and hover effects
    - Metrics tracking by category with add/view functionality
    - Goals tab showing all goals for the person
    - Milestones timeline with completion tracking
-3. **Family Tree**: Network visualization showing all family members, relationships, and collective progress
+3. **Family Tree**: 
+   - Network visualization showing all family members, relationships, and collective progress
+   - **Smart Family Suggestions**: Automatic detection of people with matching last names
+   - **Suggested Connections Section**: Grouped families with unconnected members highlighted
+   - **Intelligent Relationship Dialog**: Pre-selection and surname-based filtering
+   - One-click connection from family suggestions
 4. **Goals & Roadmap**: 
    - Create/edit goals with categories
    - Progress tracking with completion rates
@@ -86,6 +92,16 @@ Enable users to track their journey from "Bad" to "Elite++" across multiple life
   - Fixed form control issues (Select components using value prop)
   - Fixed date validation (z.coerce.date() for ISO string support)
   - Successfully tested complete user journey end-to-end
+
+- **2025-01-20 (Session 3)**: UI polish and smart family connections
+  - Enhanced UI with gradient text headers, improved metric cards, better spacing
+  - Added gradient backgrounds to avatars with hover ring animations
+  - Improved progress badges with enhanced colors and Elite++ gradient
+  - Implemented smart family connection suggestions based on matching last names
+  - Created family-utils.ts with surname detection and connection suggestion logic
+  - Added "Suggested Family Connections" section to Family page with grouped families
+  - Enhanced RelationshipDialog with highlighted surname matches and pre-selection
+  - Successfully tested end-to-end family suggestion workflow
 
 ## API Endpoints (Fully Implemented)
 ```
