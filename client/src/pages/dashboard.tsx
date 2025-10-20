@@ -50,17 +50,19 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container max-w-7xl mx-auto py-8 px-4">
+    <div className="container max-w-7xl mx-auto py-8 px-4 space-y-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground text-lg">
-          Track your transformational journey
+      <div className="space-y-3">
+        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+          Dashboard
+        </h1>
+        <p className="text-muted-foreground text-lg max-w-2xl">
+          Track your transformational journey across all life dimensions
         </p>
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total People"
           value={totalPeople}
@@ -107,31 +109,31 @@ export default function Dashboard() {
 
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
-            <CardTitle>Recent Profiles</CardTitle>
+        <Card className="border-border/50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-xl font-semibold">Recent Profiles</CardTitle>
             <Link href="/personal">
-              <Button variant="ghost" size="sm" data-testid="button-view-all-profiles">
+              <Button variant="ghost" size="sm" data-testid="button-view-all-profiles" className="text-primary">
                 View All
               </Button>
             </Link>
           </CardHeader>
           <CardContent>
             {recentPeople.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {recentPeople.map((person) => (
                   <Link key={person.id} href={`/personal/${person.id}`}>
                     <div
-                      className="flex items-center gap-4 p-3 rounded-lg hover-elevate transition-all cursor-pointer"
+                      className="flex items-center gap-4 p-4 rounded-xl hover-elevate border border-transparent hover:border-border/50 transition-all cursor-pointer group"
                       data-testid={`card-person-${person.id}`}
                     >
-                      <Avatar className="h-12 w-12">
-                        <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                      <Avatar className="h-14 w-14 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all">
+                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary font-bold text-base">
                           {person.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{person.name}</p>
+                        <p className="font-semibold truncate text-base group-hover:text-primary transition-colors">{person.name}</p>
                         <p className="text-sm text-muted-foreground truncate">
                           {person.role} • {person.age} years
                         </p>
@@ -142,38 +144,38 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-muted-foreground py-8">No profiles yet</p>
+              <p className="text-center text-muted-foreground py-12">No profiles yet</p>
             )}
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
-            <CardTitle>Active Goals</CardTitle>
+        <Card className="border-border/50">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-xl font-semibold">Active Goals</CardTitle>
             <Link href="/goals">
-              <Button variant="ghost" size="sm" data-testid="button-view-all-goals">
+              <Button variant="ghost" size="sm" data-testid="button-view-all-goals" className="text-primary">
                 View All
               </Button>
             </Link>
           </CardHeader>
           <CardContent>
             {goals && goals.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {goals.filter(g => g.status === "In Progress").slice(0, 5).map((goal) => (
                   <div
                     key={goal.id}
-                    className="p-3 rounded-lg border border-border"
+                    className="p-4 rounded-xl border border-border/50 hover-elevate transition-all group"
                     data-testid={`card-goal-${goal.id}`}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <p className="font-medium">{goal.title}</p>
-                      <span className="text-xs text-muted-foreground">
+                    <div className="flex items-start justify-between mb-3">
+                      <p className="font-semibold group-hover:text-primary transition-colors">{goal.title}</p>
+                      <span className="text-sm font-mono font-semibold text-primary bg-primary/10 px-2 py-1 rounded-md">
                         {goal.progress}%
                       </span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
+                    <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
                       <div
-                        className="bg-primary h-2 rounded-full transition-all"
+                        className="bg-gradient-to-r from-primary to-chart-2 h-2.5 rounded-full transition-all"
                         style={{ width: `${goal.progress}%` }}
                       />
                     </div>

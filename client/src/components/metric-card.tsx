@@ -12,18 +12,20 @@ interface MetricCardProps {
 
 export function MetricCard({ title, value, icon: Icon, trend, className = "" }: MetricCardProps) {
   return (
-    <Card className={`hover-elevate transition-transform ${className}`}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+    <Card className={`hover-elevate transition-all border-border/50 group ${className}`}>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+        <CardTitle className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
           {title}
         </CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+          <Icon className="h-4 w-4 text-primary" />
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-mono font-bold" data-testid={`metric-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+        <div className="text-4xl font-mono font-bold mb-2 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent" data-testid={`metric-${title.toLowerCase().replace(/\s+/g, '-')}`}>
           {value}
         </div>
-        {trend && <div className="mt-2 text-sm">{trend}</div>}
+        {trend && <div className="text-sm">{trend}</div>}
       </CardContent>
     </Card>
   );

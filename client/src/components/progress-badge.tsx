@@ -2,15 +2,15 @@ import { Badge } from "@/components/ui/badge";
 import { PROGRESS_LEVELS } from "@shared/schema";
 
 const LEVEL_COLORS: Record<string, string> = {
-  "Bad": "bg-red-500/10 text-red-500 border-red-500/20",
-  "Poor": "bg-orange-500/10 text-orange-500 border-orange-500/20",
-  "Average": "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-  "Good": "bg-green-500/10 text-green-500 border-green-500/20",
-  "Great": "bg-blue-500/10 text-blue-500 border-blue-500/20",
-  "Excellent": "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
-  "Elite": "bg-purple-500/10 text-purple-500 border-purple-500/20",
-  "Elite+": "bg-purple-600/10 text-purple-600 border-purple-600/20",
-  "Elite++": "bg-purple-700/10 text-purple-700 border-purple-700/20",
+  "Bad": "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30 font-semibold",
+  "Poor": "bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/30 font-semibold",
+  "Average": "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400 border-yellow-500/30 font-semibold",
+  "Good": "bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/30 font-semibold",
+  "Great": "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30 font-semibold",
+  "Excellent": "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30 font-semibold",
+  "Elite": "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30 font-semibold",
+  "Elite+": "bg-purple-600/15 text-purple-700 dark:text-purple-300 border-purple-600/30 font-semibold",
+  "Elite++": "bg-gradient-to-r from-purple-600/20 to-pink-600/20 text-purple-700 dark:text-purple-300 border-purple-600/40 font-bold shadow-sm",
 };
 
 interface ProgressBadgeProps {
@@ -24,7 +24,7 @@ export function ProgressBadge({ level, className = "" }: ProgressBadgeProps) {
   return (
     <Badge
       variant="outline"
-      className={`${colorClass} ${className}`}
+      className={`${colorClass} px-3 py-1 text-xs ${className}`}
       data-testid={`badge-progress-${level.toLowerCase()}`}
     >
       {level}
