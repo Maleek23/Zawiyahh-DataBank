@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -25,9 +26,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { insertFamilyRelationshipSchema, RELATIONSHIP_TYPES, Person } from "@shared/schema";
+import { Badge } from "@/components/ui/badge";
+import { insertFamilyRelationshipSchema, RELATIONSHIP_TYPES, Person, FamilyRelationship } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { getLastName, getSuggestedConnections } from "@/lib/family-utils";
 
 const formSchema = insertFamilyRelationshipSchema;
 
@@ -36,13 +39,18 @@ type FormData = z.infer<typeof formSchema>;
 interface RelationshipDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  preselectedPersonId?: string;
 }
 
-export function RelationshipDialog({ open, onOpenChange }: RelationshipDialogProps) {
+export function RelationshipDialog({ open, onOpenChange, preselectedPersonId }: RelationshipDialogProps) {
   const { toast } = useToast();
 
   const { data: people = [] } = useQuery<Person[]>({
     queryKey: ["/api/people"],
+  });
+
+  const { data: relationships = [] } = useQuery<FamilyRelationship[]>({
+    queryKey: ["/api/family-relationships"],
   });
 
   const form = useForm<FormData>({
@@ -53,6 +61,21 @@ export function RelationshipDialog({ open, onOpenChange }: RelationshipDialogPro
       relationshipType: "Parent",
     },
   });
+
+  // Pre-select person if provided
+  useEffect(() => {
+    if (preselectedPersonId && open) {
+      form.setValue("personId", preselectedPersonId);
+    }
+  }, [preselectedPersonId, open, form]);
+
+  const selectedPersonId = form.watch("personId");
+  const selectedPerson = people.find(p => p.id === selectedPersonId);
+  
+  // Get suggested connections for the selected person
+  const suggestedConnections = selectedPerson 
+    ? getSuggestedConnections(selectedPerson, people, relationships)
+    : [];
 
   const createMutation = useMutation({
     mutationFn: async (data: FormData) => {
@@ -156,6 +179,11 @@ export function RelationshipDialog({ open, onOpenChange }: RelationshipDialogPro
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Related To *</FormLabel>
+                  {suggestedConnections.length > 0 && (
+                    <p className="text-xs text-muted-foreground mb-2">
+                      💡 {suggestedConnections.length} suggested {suggestedConnections.length === 1 ? 'match' : 'matches'} with matching last name
+                    </p>
+                  )}
                   <Select onValueChange={field.onChange} value={field.value || ""}>
                     <FormControl>
                       <SelectTrigger data-testid="select-relationship-related-person">
@@ -163,11 +191,34 @@ export function RelationshipDialog({ open, onOpenChange }: RelationshipDialogPro
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {people.map((person) => (
-                        <SelectItem key={person.id} value={person.id}>
-                          {person.name} ({person.role})
-                        </SelectItem>
-                      ))}
+                      {selectedPersonId && suggestedConnections.length > 0 && (
+                        <>
+                          {suggestedConnections.map((person) => (
+                            <SelectItem 
+                              key={person.id} 
+                              value={person.id}
+                              className="bg-primary/5"
+                            >
+                              <div className="flex items-center gap-2">
+                                {person.name} ({person.role})
+                                <Badge className="ml-auto bg-primary/20 text-primary border-primary/30 text-xs">
+                                  {getLastName(person.name)}
+                                </Badge>
+                              </div>
+                            </SelectItem>
+                          ))}
+                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                            Other People
+                          </div>
+                        </>
+                      )}
+                      {people
+                        .filter(p => p.id !== selectedPersonId && !suggestedConnections.find(s => s.id === p.id))
+                        .map((person) => (
+                          <SelectItem key={person.id} value={person.id}>
+                            {person.name} ({person.role})
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

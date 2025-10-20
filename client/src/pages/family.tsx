@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Users, Plus, Network, TrendingUp } from "lucide-react";
+import { Users, Plus, Network, TrendingUp, Sparkles, Link as LinkIcon } from "lucide-react";
 import { Person, FamilyRelationship } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,9 +8,13 @@ import { EmptyState } from "@/components/empty-state";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ProgressBadge } from "@/components/progress-badge";
 import { RelationshipDialog } from "@/components/relationship-dialog";
+import { findUnconnectedFamilyMembers, getLastName } from "@/lib/family-utils";
+import { Badge } from "@/components/ui/badge";
 
 export default function Family() {
   const [isRelationshipDialogOpen, setIsRelationshipDialogOpen] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState<string | undefined>();
+  
   const { data: people = [], isLoading } = useQuery<Person[]>({
     queryKey: ["/api/people"],
   });
@@ -18,6 +22,9 @@ export default function Family() {
   const { data: relationships = [] } = useQuery<FamilyRelationship[]>({
     queryKey: ["/api/family-relationships"],
   });
+
+  // Find unconnected people with matching last names
+  const suggestedFamilies = findUnconnectedFamilyMembers(people, relationships);
 
   const getRelatedPeople = (personId: string) => {
     return relationships
@@ -109,8 +116,71 @@ export default function Family() {
 
       {people.length > 0 ? (
         <div className="space-y-8">
+          {/* Suggested Connections */}
+          {suggestedFamilies.size > 0 && (
+            <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-chart-2/5">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/20">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-xl">Suggested Family Connections</CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      People with matching last names who aren't connected yet
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {Array.from(suggestedFamilies.entries()).map(([lastName, members]) => (
+                    <div key={lastName} className="p-4 rounded-xl border border-border/50 bg-card/50">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <Badge className="bg-primary/20 text-primary border-primary/30 font-semibold">
+                            {lastName} Family
+                          </Badge>
+                          <span className="text-sm text-muted-foreground">
+                            {members.length} {members.length === 1 ? 'member' : 'members'}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSelectedPerson(members[0].id);
+                            setIsRelationshipDialogOpen(true);
+                          }}
+                          data-testid={`button-connect-${lastName}`}
+                        >
+                          <LinkIcon className="h-4 w-4 mr-2" />
+                          Connect
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {members.map(person => (
+                          <div key={person.id} className="flex items-center gap-3 p-3 rounded-lg bg-background/50 border border-border/30">
+                            <Avatar className="h-10 w-10">
+                              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary font-semibold text-sm">
+                                {person.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">{person.name}</p>
+                              <p className="text-xs text-muted-foreground truncate">{person.role}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Family Network Visualization */}
-          <Card>
+          <Card className="border-border/50">
             <CardHeader>
               <CardTitle>Family Network</CardTitle>
             </CardHeader>
@@ -193,6 +263,7 @@ export default function Family() {
       <RelationshipDialog
         open={isRelationshipDialogOpen}
         onOpenChange={setIsRelationshipDialogOpen}
+        preselectedPersonId={selectedPerson}
       />
     </div>
   );
